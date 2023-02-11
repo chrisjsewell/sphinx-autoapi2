@@ -1,5 +1,5 @@
-Sphinx AutoAPI
-==============
+Sphinx AutoAPI 2
+================
 
 .. image:: https://readthedocs.org/projects/sphinx-autoapi/badge/?version=latest
     :target: https://sphinx-autoapi.readthedocs.org
@@ -20,6 +20,16 @@ Sphinx AutoAPI
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/python/black
     :alt: Formatted with Black
+
+**NOTE**: This is a fork of the original `sphinx-autoapi`,
+which intended to make it compatible with MyST-Parser.
+Hopefully, the changes will eventually be merged upstream.
+The goals are:
+
+1. Add a set of templates, for use with MyST-Parser
+2. Make it possible to write files with a specific extension, based on a file regex;
+   we want users to be able to gradually migrate existing codebases to MyST-Parser,
+   so being able to specify only certain files will be very helpful.
 
 Sphinx AutoAPI provides "autodoc" style documentation for multiple programming languages
 without needing to load, run, or import the project being documented.
