@@ -1,48 +1,52 @@
 {% if not obj.display %}
-:orphan:
+---
+orphan: true
+---
 
 {% endif %}
-:py:mod:`{{ obj.name }}`
-=========={{ "=" * obj.name|length }}
+# {py:mod}`{{ obj.name }}`
 
-.. py:module:: {{ obj.name }}
+```{py:module} {{ obj.name }}
+```
 
 {% if obj.docstring %}
-.. autoapi-nested-parse::
+```````{autoapi-nested-parse}
+{{ obj.docstring }}
 
-   {{ obj.docstring|indent(3) }}
-
+```````
 {% endif %}
 
 {% block subpackages %}
 {% set visible_subpackages = obj.subpackages|selectattr("display")|list %}
 {% if visible_subpackages %}
-Subpackages
------------
-.. toctree::
-   :titlesonly:
-   :maxdepth: 3
+# Subpackages
+
+```{toctree}
+:titlesonly:
+:maxdepth: 3
 
 {% for subpackage in visible_subpackages %}
-   {{ subpackage.short_name }}/index
+{{ subpackage.short_name }}/index
 {% endfor %}
 
+```
 
 {% endif %}
 {% endblock %}
 {% block submodules %}
 {% set visible_submodules = obj.submodules|selectattr("display")|list %}
 {% if visible_submodules %}
-Submodules
-----------
-.. toctree::
-   :titlesonly:
-   :maxdepth: 1
+# Submodules
+
+```{toctree}
+:titlesonly:
+:maxdepth: 1
 
 {% for submodule in visible_submodules %}
-   {{ submodule.short_name }}/index
+{{ submodule.short_name }}/index
 {% endfor %}
 
+```
 
 {% endif %}
 {% endblock %}
@@ -55,8 +59,7 @@ Submodules
 {% set visible_children = obj.children|selectattr("display")|rejectattr("imported")|list %}
 {% endif %}
 {% if visible_children %}
-{{ obj.type|title }} Contents
-{{ "-" * obj.type|length }}---------
+## {{ obj.type|title }} Contents
 
 {% set visible_classes = visible_children|selectattr("type", "equalto", "class")|list %}
 {% set visible_functions = visible_children|selectattr("type", "equalto", "function")|list %}
@@ -64,51 +67,52 @@ Submodules
 {% if "show-module-summary" in autoapi_options and (visible_classes or visible_functions) %}
 {% block classes scoped %}
 {% if visible_classes %}
-Classes
-~~~~~~~
+### Classes
 
-.. autoapisummary::
+```{autoapisummary}
 
 {% for klass in visible_classes %}
-   {{ klass.id }}
+{{ klass.id }}
 {% endfor %}
 
+```
 
 {% endif %}
 {% endblock %}
 
 {% block functions scoped %}
 {% if visible_functions %}
-Functions
-~~~~~~~~~
+### Functions
 
-.. autoapisummary::
+```{autoapisummary}
 
 {% for function in visible_functions %}
-   {{ function.id }}
+{{ function.id }}
 {% endfor %}
 
+```
 
 {% endif %}
 {% endblock %}
 
 {% block attributes scoped %}
 {% if visible_attributes %}
-Attributes
-~~~~~~~~~~
+### Attributes
 
-.. autoapisummary::
+```{autoapisummary}
 
 {% for attribute in visible_attributes %}
-   {{ attribute.id }}
+{{ attribute.id }}
 {% endfor %}
+
+```
 
 
 {% endif %}
 {% endblock %}
 {% endif %}
 {% for obj_item in visible_children %}
-{{ obj_item.render()|indent(0) }}
+{{ obj_item.render() }}
 {% endfor %}
 {% endif %}
 {% endblock %}

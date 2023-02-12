@@ -142,21 +142,13 @@ def run_autoapi(app):  # pylint: disable=too-many-branches
     else:
         ignore_patterns = DEFAULT_IGNORE_PATTERNS.get(app.config.autoapi_type, [])
 
-    if ".rst" in app.config.source_suffix:
-        out_suffix = ".rst"
-    elif ".txt" in app.config.source_suffix:
-        out_suffix = ".txt"
-    else:
-        # Fallback to first suffix listed
-        out_suffix = next(iter(app.config.source_suffix))
-
     if sphinx_mapper_obj.load(
         patterns=file_patterns, dirs=normalised_dirs, ignore=ignore_patterns
     ):
         sphinx_mapper_obj.map(options=app.config.autoapi_options)
 
         if app.config.autoapi_generate_api_docs:
-            sphinx_mapper_obj.output_rst(root=normalized_root, source_suffix=out_suffix)
+            sphinx_mapper_obj.output_rst(root=normalized_root)
 
 
 def build_finished(app, exception):
@@ -296,6 +288,8 @@ def setup(app):
     app.add_config_value("autoapi_generate_api_docs", True, "html")
     app.add_config_value("autoapi_prepare_jinja_env", None, "html")
     app.add_config_value("autoapi_add_objects_to_toctree", True, "html")
+    app.add_config_value("autoapi_default_suffix", ".rst", "html")
+    app.add_config_value("autoapi_id_to_suffix", None, "html")
     app.add_autodocumenter(documenters.AutoapiFunctionDocumenter)
     app.add_autodocumenter(documenters.AutoapiPropertyDocumenter)
     app.add_autodocumenter(documenters.AutoapiDecoratorDocumenter)

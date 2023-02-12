@@ -192,7 +192,7 @@ def _resolve_placeholder(placeholder, original):
     placeholder.update(new)
 
 
-def _link_objs(value):
+def _link_objs(value, render="rst"):
     result = ""
 
     delims = r"(\s*[\[\]\(\),]\s*)"
@@ -208,7 +208,10 @@ def _link_objs(value):
             else:
                 result += "\\ "
         elif sub_target:
-            result += f":py:obj:`{sub_target}`\\ "
+            if render == "rst":
+                result += f":py:obj:`{sub_target}`\\ "
+            elif render == "myst":
+                result += f"{{py:obj}}`{sub_target}`\\ "
 
     # Strip off the extra "\ "
     return result[:-2]

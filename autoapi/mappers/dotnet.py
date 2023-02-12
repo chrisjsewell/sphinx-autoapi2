@@ -236,7 +236,7 @@ class DotNetSphinxMapper(SphinxMapperBase):
             if not namespace.children:
                 del self.namespaces[key]
 
-    def output_rst(self, root, source_suffix):
+    def output_rst(self, root):
         if not self.objects:
             raise ExtensionError("No API objects exist. Can't continue")
 
@@ -255,7 +255,8 @@ class DotNetSphinxMapper(SphinxMapperBase):
 
             detail_dir = os.path.join(root, obj.pathname)
             ensuredir(detail_dir)
-            path = os.path.join(detail_dir, f"index{source_suffix}")
+            suffix = obj.get_suffix()
+            path = os.path.join(detail_dir, f"index.{suffix}")
             with open(path, "wb") as detail_file:
                 detail_file.write(rst.encode("utf-8"))
 

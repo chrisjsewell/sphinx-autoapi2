@@ -69,15 +69,24 @@ class PythonMapperBase:
         __dict__.update(app=None, jinja_env=None)  # clear unpickable attributes
         return __dict__
 
+    def get_suffix(self):
+        suffix = self.app.config.autoapi_default_suffix
+        for pattern in (self.app.config.autoapi_id_to_suffix or {}):
+            if fnmatch.fnmatch(self.id, pattern):
+                suffix = self.app.config.autoapi_id_to_suffix[pattern]
+                break
+        return suffix
+
     def render(self, **kwargs):
         LOGGER.log(self._RENDER_LOG_LEVEL, "Rendering %s", self.id)
 
+        suffix = self.get_suffix()
         ctx = {}
         try:
-            template = self.jinja_env.get_template(f"{self.language}/{self.type}.rst")
+            template = self.jinja_env.get_template(f"{self.language}/{self.type}{suffix}")
         except TemplateNotFound:
             # Use a try/except here so we fallback to language specific defaults, over base defaults
-            template = self.jinja_env.get_template(f"base/{self.type}.rst")
+            template = self.jinja_env.get_template(f"base/{self.type}{suffix}")
 
         ctx.update(**self.get_context_data())
         ctx.update(**kwargs)
@@ -305,7 +314,7 @@ class SphinxMapperBase:
         """
         raise NotImplementedError
 
-    def output_rst(self, root, source_suffix):
+    def output_rst(self, root):
         for _, obj in sphinx.util.status_iterator(
             self.objects.items(),
             bold("[AutoAPI] ") + "Rendering Data... ",
@@ -319,7 +328,8 @@ class SphinxMapperBase:
 
             detail_dir = obj.include_dir(root=root)
             ensuredir(detail_dir)
-            path = os.path.join(detail_dir, f"index{source_suffix}")
+            suffix = obj.get_suffix()
+            path = os.path.join(detail_dir, f"index{suffix}")
             with open(path, "wb+") as detail_file:
                 detail_file.write(rst.encode("utf-8"))
 
